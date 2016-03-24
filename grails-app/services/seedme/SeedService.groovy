@@ -466,14 +466,13 @@ class SeedService {
 		if(!seedPaths) {
 			//log.error "Seed folder '${seedFolder.absolutePath}' not found"
 		}
-		seedPaths.each { seedPath ->
-			def seedFolder = new File(seedPath.value)
-			def pluginName = seedPath.key
+		seedPaths.each { pluginName, path ->
+			def seedFolder = new File(path)
 			if(!seedFolder.exists()) return;
 			seedFolder.traverse([
 				type: FileType.FILES,
 				nameFilter: ~/.*\.groovy/,
-				preDir : { if (it.name != subDir ) return FileVisitResult.SKIP_SUBTREE }
+				preDir : { if (it.name != env) return FileVisitResult.SKIP_SUBTREE }
 			], { file ->
 				if(!isSeedFileExcluded(file.name))
 					seedFiles << [file: file, plugin: pluginName]
